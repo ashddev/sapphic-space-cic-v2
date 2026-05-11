@@ -1,17 +1,100 @@
 ---
-
+import Header from "../components/Header.astro";
+import VideoHero from "../components/VideoHero.astro";
+import UpcomingEvents from "../components/UpcomingEvents.astro";
+import MarqueeBanner from "../components/MarqueeBanner.astro";
+import Newsletter from "../components/Newsletter.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/icon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Sapphic Space UK</title>
+    <meta
+      name="description"
+      content="The Sapphic Space — a Community Interest Company creating safe, joyful events for sapphic people across the UK. Browse upcoming events."
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #fff;
+        color: #111;
+      }
+    </style>
+    <style>
+      .events-skeleton {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        margin: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .events-skeleton {
+          margin: 1rem 2rem;
+        }
+      }
+
+      .skeleton-card {
+        height: 420px;
+        border-radius: 12px;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .skeleton-card {
+          height: 50dvh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header logoSrc="/TheSapphicSpaceUK.png" logoAlt="Sapphic Space UK" />
+    <main>
+      <VideoHero
+        videoSrc="/video.mp4"
+        outsavvyUrl="https://www.outsavvy.com/organiser/the-sapphic-space-cic"
+        posterSrc="/videos/snapshot.jpg"
+      />
+      <MarqueeBanner text="Upcoming Events" />
+      <UpcomingEvents server:defer>
+        <div slot="fallback" class="events-skeleton">
+          <div class="skeleton-card"></div>
+        </div>
+      </UpcomingEvents>
+      <!-- <Newsletter /> -->
+    </main>
+    <Footer />
+  </body>
 </html>

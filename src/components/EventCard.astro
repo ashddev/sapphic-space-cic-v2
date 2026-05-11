@@ -1,0 +1,181 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  address_1: string;
+  address_town: string;
+  address_postcode: string;
+  dates: { startlocal: string }[];
+  price: string;
+  description: string;
+  image_url: string;
+  url: string;
+  index: number;
+}
+
+const { name, address_1, address_town, dates, image_url, url, index, price } =
+  Astro.props;
+
+const isSoldOut = price === "Sold Out";
+
+const isOdd = index % 2 !== 0;
+
+const color = isOdd ? "247, 147, 204" : "255, 133, 85";
+const overlayLeft = isOdd ? "0" : "50%";
+const overlayRight = isOdd ? "50%" : "0";
+const gradientDir = isOdd ? "to left" : "to right";
+
+const date = dates?.[0]?.["startlocal"]
+  ? new Date(dates[0].startlocal).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : null;
+---
+
+<a
+  href={url}
+  class="event-card"
+  style={`--card-color: ${color}; --overlay-left: ${overlayLeft}; --overlay-right: ${overlayRight}; --gradient-dir: ${gradientDir};`}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img src={image_url} alt={name} class="card-image" loading="lazy" />
+  <div class="card-overlay">
+    <h3>{name}</h3>
+    {date && <p class="event-datetime">📅 {date}</p>}
+    <p class="event-location">📍 {address_1}, {address_town}</p>
+    {
+      isSoldOut ? (
+        <div class="sold-out-badge">Sold Out!</div>
+      ) : (
+        <div class="sold-out-badge">
+          <span>View event</span>{" "}
+          <img src="/outsavvylogo.png" alt="Outsavvy" class="outsavvy-logo" />
+        </div>
+      )
+    }
+  </div>
+</a>
+
+<style>
+  .event-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    border: 6px solid transparent;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.3s ease;
+  }
+
+  .event-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+    border-color: rgb(255, 89, 94) !important;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .card-overlay {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem;
+    background: rgba(var(--card-color), 0.92);
+  }
+
+  .card-overlay h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 0.25rem;
+  }
+
+  .card-overlay > p {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .event-datetime {
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+
+  .sold-out-badge {
+    background-color: rgb(255, 89, 94);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0.25rem 0.85rem;
+    font-size: 0.95rem;
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .outsavvy-logo {
+    height: 1em;
+    width: auto;
+    vertical-align: middle;
+  }
+
+  @media (min-width: 768px) {
+    .event-card {
+      display: block;
+      position: relative;
+      height: 50dvh;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--overlay-left);
+      right: var(--overlay-right);
+      width: 50%;
+      padding: 1.75rem 1.5rem;
+      background: linear-gradient(
+        var(--gradient-dir),
+        transparent,
+        rgba(var(--card-color), 0.92) 40%
+      );
+    }
+
+    .card-overlay h3 {
+      font-size: 2rem;
+    }
+
+    .card-overlay > p {
+      font-size: 1.3rem;
+    }
+
+    .event-datetime {
+      font-size: 1.35rem;
+    }
+  }
+</style>

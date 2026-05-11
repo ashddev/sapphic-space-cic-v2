@@ -1,0 +1,32 @@
+---
+interface Props {
+  logoSrc?: string;
+  logoAlt?: string;
+}
+
+const { logoSrc = "/logo.svg", logoAlt = "Sapphic Space UK" } = Astro.props;
+---
+
+<header>
+    <img src={logoSrc} alt={logoAlt} class="logo" />
+</header>
+
+<style>
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+  }
+
+  .logo {
+    height: 56px;
+    width: auto;
+  }
+
+  @media (min-width: 768px) {
+    .logo {
+      height: 80px;
+    }
+  }
+</style>

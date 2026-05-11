@@ -1,0 +1,139 @@
+---
+interface Props {
+  videoSrc: string;
+  outsavvyUrl: string;
+  posterSrc?: string;
+}
+
+const { videoSrc, outsavvyUrl, posterSrc } = Astro.props;
+---
+
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline poster={posterSrc}>
+    <source src={videoSrc} type="video/mp4" />
+  </video>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">The Sapphic Space</h1>
+    <a
+      href={outsavvyUrl}
+      class="cta-button"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      View Events <img
+        src="/outsavvylogo.png"
+        alt="Outsavvy"
+        class="outsavvy-logo"
+        id="outsavvy-logo"
+      />
+    </a>
+  </div>
+</section>
+
+<script>
+  const logo = document.getElementById("outsavvy-logo") as HTMLImageElement;
+  const button = logo?.closest(".cta-button") as HTMLElement;
+
+  if (logo && button) {
+    logo
+      .decode()
+      .catch(() => {})
+      .finally(() => button.classList.add("loaded"));
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    height: calc(85svh - 2rem);
+    margin: 1rem;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      margin: 1rem 2rem;
+    }
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero-title {
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    margin: 0px;
+    animation: fadeIn 1s ease forwards;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem 2.25rem;
+    background-color: #fff;
+    color: #111;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      opacity 1s ease;
+    margin: 0px;
+    opacity: 0;
+  }
+
+  .cta-button.loaded {
+    opacity: 1;
+    transition-delay: 0.5s;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .cta-button:hover {
+    background-color: rgb(255, 89, 94);
+    color: #fff;
+  }
+
+  .outsavvy-logo {
+    height: 1.1em;
+    width: auto;
+    vertical-align: middle;
+    margin-left: 0.4rem;
+  }
+</style>

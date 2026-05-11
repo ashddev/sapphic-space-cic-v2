@@ -1,0 +1,141 @@
+---
+---
+
+<section class="newsletter">
+  <h2 class="newsletter-heading">Sign up to our mailing list</h2>
+  <p class="newsletter-sub">Be the first to hear about new events and announcements.</p>
+  <form class="newsletter-form" id="newsletter-form">
+    <input
+      class="email-input"
+      type="email"
+      name="email"
+      placeholder="your@email.com"
+      required
+      aria-label="Email address"
+    />
+    <button class="subscribe-btn" type="submit">Subscribe</button>
+  </form>
+  <p class="newsletter-feedback" id="newsletter-feedback" aria-live="polite"></p>
+</section>
+
+<!-- <script>
+  const MAILERLITE_API_KEY = import.meta.env.PUBLIC_MAILERLITE_API_KEY;
+  const MAILERLITE_GROUP_ID = import.meta.env.PUBLIC_MAILERLITE_GROUP_ID;
+
+  const form = document.getElementById("newsletter-form") as HTMLFormElement;
+  const feedback = document.getElementById("newsletter-feedback")!;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+
+    try {
+      const res = await fetch("https://connect.mailerlite.com/api/subscribers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${MAILERLITE_API_KEY}`,
+        },
+        body: JSON.stringify({ email, groups: [MAILERLITE_GROUP_ID] }),
+      });
+
+      if (res.ok) {
+        feedback.textContent = "You're subscribed!";
+        feedback.style.color = "#111";
+        form.reset();
+      } else {
+        feedback.textContent = "Something went wrong. Please try again.";
+        feedback.style.color = "#c00";
+      }
+    } catch {
+      feedback.textContent = "Something went wrong. Please try again later.";
+      feedback.style.color = "#c00";
+    }
+  });
+</script> -->
+
+<style>
+  .newsletter {
+    background-color: rgb(247, 147, 204);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .newsletter-heading {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0px;
+  }
+
+  .newsletter-sub {
+    font-size: 1rem;
+    color: #666;
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .newsletter-feedback {
+    min-height: 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .email-input {
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    background: #fff;
+    color: #111;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .email-input::placeholder {
+    color: #aaa;
+  }
+
+  .email-input:focus {
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .subscribe-btn {
+    padding: 0.85rem 1.5rem;
+    background: #111;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .subscribe-btn:hover {
+    background: #333;
+  }
+
+  @media (min-width: 540px) {
+    .newsletter-form {
+      flex-direction: row;
+    }
+
+    .email-input {
+      flex: 1;
+    }
+
+    .subscribe-btn {
+      white-space: nowrap;
+    }
+  }
+</style>
