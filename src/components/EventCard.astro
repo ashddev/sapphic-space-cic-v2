@@ -1,4 +1,6 @@
 ---
+import { Calendar, MapPin } from "@lucide/astro";
+
 interface Props {
   id: string;
   name: string;
@@ -19,11 +21,7 @@ const { name, address_1, address_town, dates, image_url, url, index, price } =
 const isSoldOut = price === "Sold Out";
 
 const isOdd = index % 2 !== 0;
-
-const color = isOdd ? "247, 147, 204" : "255, 133, 85";
-const overlayLeft = isOdd ? "0" : "50%";
-const overlayRight = isOdd ? "50%" : "0";
-const gradientDir = isOdd ? "to left" : "to right";
+const accent = isOdd ? "247, 147, 204" : "255, 133, 85";
 
 const date = dates?.[0]?.["startlocal"]
   ? new Date(dates[0].startlocal).toLocaleDateString("en-GB", {
@@ -32,28 +30,49 @@ const date = dates?.[0]?.["startlocal"]
       year: "numeric",
     })
   : null;
+
+const showPrice = !isSoldOut && price && price.trim() !== "";
 ---
 
 <a
   href={url}
   class="event-card"
-  style={`--card-color: ${color}; --overlay-left: ${overlayLeft}; --overlay-right: ${overlayRight}; --gradient-dir: ${gradientDir};`}
+  style={`--accent: ${accent};`}
   target="_blank"
   rel="noopener noreferrer"
 >
-  <img src={image_url} alt={name} class="card-image" loading="lazy" />
-  <div class="card-overlay">
-    <h3>{name}</h3>
-    {date && <p class="event-datetime">📅 {date}</p>}
-    <p class="event-location">📍 {address_1}, {address_town}</p>
+  <div class="card-media">
+    <img src={image_url} alt={name} class="card-image" loading="lazy" />
+    {isSoldOut && <span class="price-badge sold">Sold Out</span>}
+    {showPrice && <span class="price-badge">{price}</span>}
+  </div>
+
+  <div class="card-body">
+    <h3 class="card-title">{name}</h3>
+
+    <div class="card-meta">
+      {
+        date && (
+          <p class="meta-row">
+            <Calendar size={16} aria-hidden="true" />
+            <span>{date}</span>
+          </p>
+        )
+      }
+      <p class="meta-row">
+        <MapPin size={16} aria-hidden="true" />
+        <span>{address_1}, {address_town}</span>
+      </p>
+    </div>
+
     {
       isSoldOut ? (
-        <div class="sold-out-badge">Sold Out!</div>
+        <span class="view-btn sold">Sold Out</span>
       ) : (
-        <div class="sold-out-badge">
-          <span>View event</span>{" "}
+        <span class="view-btn">
+          View event
           <img src="/outsavvylogo.png" alt="Outsavvy" class="outsavvy-logo" />
-        </div>
+        </span>
       )
     }
   </div>
@@ -63,74 +82,115 @@ const date = dates?.[0]?.["startlocal"]
   .event-card {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    border: 6px solid transparent;
+    background: #fff;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(46, 31, 35, 0.08);
+    box-shadow: 0 4px 16px rgba(46, 31, 35, 0.08);
     text-decoration: none;
     color: inherit;
     transition:
       transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.3s ease;
+      box-shadow 0.2s ease;
   }
 
   .event-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
-    border-color: rgb(255, 89, 94) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(46, 31, 35, 0.16);
+  }
+
+  .card-media {
+    position: relative;
+    flex-shrink: 0;
   }
 
   .card-image {
     width: 100%;
-    height: 220px;
+    height: 200px;
     object-fit: cover;
     display: block;
-    flex-shrink: 0;
   }
 
-  .card-overlay {
+  .price-badge {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    background: rgb(255, 89, 94);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .price-badge.sold {
+    background: rgba(46, 31, 35, 0.85);
+  }
+
+  .card-body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    color: #fff;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 1.25rem;
-    background: rgba(var(--card-color), 0.92);
+    gap: 0.75rem;
+    padding: 1.25rem 1.35rem 1.4rem;
+    /* accent strip on the left edge of the content */
+    border-top: 3px solid rgb(var(--accent));
   }
 
-  .card-overlay h3 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin: 0 0 0.25rem;
-  }
-
-  .card-overlay > p {
-    font-size: 1rem;
+  .card-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #2e1f23;
     margin: 0;
   }
 
-  .event-datetime {
-    font-weight: 600;
-    font-size: 1.05rem;
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 
-  .sold-out-badge {
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.95rem;
+    color: rgba(46, 31, 35, 0.7);
+  }
+
+  .meta-row svg {
+    flex-shrink: 0;
+    color: rgb(var(--accent));
+  }
+
+  .view-btn {
+    margin-top: auto;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
     background-color: rgb(255, 89, 94);
     color: #fff;
+    font-size: 0.95rem;
     font-weight: 700;
     border-radius: 999px;
-    padding: 0.25rem 0.85rem;
-    font-size: 0.95rem;
-    margin-top: 0.4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.4rem;
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .event-card:hover .view-btn:not(.sold) {
+    background-color: rgb(235, 70, 75);
+    box-shadow: 0 6px 16px rgba(255, 89, 94, 0.35);
+  }
+
+  .view-btn.sold {
+    background: rgba(46, 31, 35, 0.12);
+    color: rgba(46, 31, 35, 0.55);
   }
 
   .outsavvy-logo {
@@ -140,42 +200,21 @@ const date = dates?.[0]?.["startlocal"]
   }
 
   @media (min-width: 768px) {
-    .event-card {
-      display: block;
-      position: relative;
-      height: 50dvh;
-    }
-
     .card-image {
-      width: 100%;
-      height: 100%;
+      height: 260px;
     }
 
-    .card-overlay {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: var(--overlay-left);
-      right: var(--overlay-right);
-      width: 50%;
-      padding: 1.75rem 1.5rem;
-      background: linear-gradient(
-        var(--gradient-dir),
-        transparent,
-        rgba(var(--card-color), 0.92) 40%
-      );
+    .card-body {
+      padding: 1.5rem 1.6rem 1.6rem;
+      gap: 0.9rem;
     }
 
-    .card-overlay h3 {
-      font-size: 2rem;
+    .card-title {
+      font-size: 1.6rem;
     }
 
-    .card-overlay > p {
-      font-size: 1.3rem;
-    }
-
-    .event-datetime {
-      font-size: 1.35rem;
+    .meta-row {
+      font-size: 1.05rem;
     }
   }
 </style>

@@ -5,27 +5,27 @@ interface Props {
   text: string;
 }
 
-const {
-  text,
-} = Astro.props;
+const { text } = Astro.props;
 
 const items = Array(16).fill(null);
 ---
 
 <div class="marquee-banner" aria-label={text}>
   <div class="marquee-track">
-    {items.map(() => (
-      <>
-        <span class="marquee-item">{text}</span>
-        <ArrowDown size={50}/>
-      </>
-    ))}
+    {
+      items.map(() => (
+        <>
+          <span class="marquee-item">{text}</span>
+          <ArrowDown size={50} />
+        </>
+      ))
+    }
   </div>
 </div>
 
 <style>
   .marquee-banner {
-    background: rgb(247, 147, 204);
+    background: #e0abe0;
     color: #fff;
     overflow: hidden;
     padding: 1rem 0;
@@ -36,11 +36,11 @@ const items = Array(16).fill(null);
     width: max-content;
     animation: marquee-scroll 40s linear infinite;
   }
-  
+
   .marquee-item {
     font-size: 2rem;
     font-weight: 700;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     white-space: nowrap;
     padding: 0 1rem;
@@ -49,12 +49,21 @@ const items = Array(16).fill(null);
   }
 
   @media (max-width: 640px) {
-    .marquee-item { letter-spacing: 0.05em; }
-    .marquee-track svg { width: 36px; height: 36px; }
+    .marquee-item {
+      letter-spacing: 0.05em;
+    }
+    .marquee-track svg {
+      width: 36px;
+      height: 36px;
+    }
   }
 
   @keyframes marquee-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 </style>

@@ -20,13 +20,17 @@ const API_URL = "https://api.outsavvy.com/v1/events/search";
 let events: Event[] = [];
 let fetchFailed = false;
 try {
+  console.log(`Partner ${import.meta.env.OUTSAVVY_ACCESS_TOKEN ?? ""}`);
   const res = await fetch(API_URL, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Partner ${import.meta.env.OUTSAVVY_ACCESS_TOKEN ?? ""}`,
     },
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (!res.ok)
+    throw new Error(
+      `HTTP ${res.status} ${res.statusText}: ${await res.text()}`,
+    );
   const json_response = await res.json();
   events = json_response.events;
 } catch (err) {
@@ -35,13 +39,22 @@ try {
 }
 ---
 
-<section>
-  {fetchFailed && (
-    <p class="events-message">Unable to load events right now. Please check back soon.</p>
-  )}
-  {!fetchFailed && events.length === 0 && (
-    <p class="events-message">No upcoming events at the moment. Check back soon!</p>
-  )}
+<section class="events-section">
+  <!-- <h2 class="events-title">Upcoming Events</h2> -->
+  {
+    fetchFailed && (
+      <p class="events-message">
+        Unable to load events right now. Please check back soon.
+      </p>
+    )
+  }
+  {
+    !fetchFailed && events.length === 0 && (
+      <p class="events-message">
+        No upcoming events at the moment. Check back soon!
+      </p>
+    )
+  }
   <div class="events-grid">
     {
       events.map((event, i) => (
@@ -54,22 +67,38 @@ try {
 </section>
 
 <style>
+  .events-section {
+    padding-block: var(--section-space, 3rem);
+  }
+
+  .events-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    color: #2e1f23;
+    margin: 0 0 1.5rem;
+    padding: 0 1rem;
+  }
+
   .events-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.25rem;
-    margin: 1rem;
+    margin: 0 1rem;
   }
 
   @media (min-width: 768px) {
     .events-grid {
-      margin: 1rem 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
   }
 
   .events-message {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 0 1rem 1.5rem;
     color: rgba(0, 0, 0, 0.5);
     font-size: 1rem;
   }
