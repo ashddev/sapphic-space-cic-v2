@@ -1,0 +1,131 @@
+---
+import { ChevronDown } from "@lucide/astro";
+
+interface QA {
+  question: string;
+  answer: string;
+}
+
+const faqs: QA[] = [
+  {
+    question: "Who are your events for?",
+    answer:
+      "Our events are for women (trans inclusive 🏳️‍⚧️) and non-binary people that love women. We're committed to being a safe, inclusive space for the whole sapphic community.",
+  },
+  {
+    question: "Are your events really sober-friendly?",
+    answer:
+      "Yes. Our events are designed so you never need to drink to feel part of things. Non-alcoholic options are always available and the focus is on connection, not the bar.",
+  },
+  {
+    question: "Where do your events take place?",
+    answer:
+      "We currently host events in Glasgow and Edinburgh, with new dates being added regularly. Check the upcoming events above to see what's happening near you.",
+  },
+  {
+    question: "How do I book a ticket?",
+    answer:
+      "All bookings are handled through our Outsavvy page. Just tap any event above or the View Events button to grab your spot.",
+  },
+  {
+    question: "Can I come on my own?",
+    answer:
+      "Absolutely — many of our guests come solo. Our events are warm and welcoming, and they're a lovely way to meet new people in the community.",
+  },
+];
+---
+
+<section class="faq">
+  <div class="faq-inner">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      {
+        faqs.map(({ question, answer }) => (
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>{question}</span>
+              <ChevronDown class="faq-chevron" size={20} aria-hidden="true" />
+            </summary>
+            <p class="faq-answer">{answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    --accent: 247, 147, 204;
+    padding: var(--section-space, 3rem) 1rem;
+  }
+
+  .faq-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .faq-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    color: #2e1f23;
+    margin: 0 0 1.75rem;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .faq-item {
+    border: 1px solid rgba(var(--accent), 0.4);
+    border-left: 4px solid rgb(var(--accent));
+    border-radius: 14px;
+    background: rgba(var(--accent), 0.14);
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(46, 31, 35, 0.05);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .faq-item[open] {
+    background: rgba(var(--accent), 0.22);
+    box-shadow: 0 8px 20px rgba(var(--accent), 0.2);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2e1f23;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: rgba(46, 31, 35, 0.55);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    margin: 0;
+    padding: 0 1.25rem 1.25rem;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: rgba(46, 31, 35, 0.72);
+  }
+</style>
