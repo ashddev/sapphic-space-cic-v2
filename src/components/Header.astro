@@ -4,29 +4,80 @@ interface Props {
   logoAlt?: string;
 }
 
+import { socials } from "../data/socials";
+
 const { logoSrc = "/logo.svg", logoAlt = "Sapphic Space UK" } = Astro.props;
 ---
 
 <header>
-    <img src={logoSrc} alt={logoAlt} class="logo" />
+  <img src={logoSrc} alt={logoAlt} class="logo" />
+  <nav class="socials" aria-label="Social media links">
+    {
+      socials.map(({ label, href, icon }) => (
+        <a
+          href={href}
+          class="social-link"
+          aria-label={label}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Fragment set:html={icon} />
+        </a>
+      ))
+    }
+  </nav>
 </header>
 
 <style>
   header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding-top: 1rem;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: transparent;
   }
 
   .logo {
-    height: 56px;
-    width: auto;
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .socials {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .social-link {
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+    transition: color 0.2s ease;
+  }
+
+  .social-link:hover {
+    color: #fff;
   }
 
   @media (min-width: 768px) {
+    header {
+      padding: 1.25rem 2.5rem;
+    }
+
     .logo {
-      height: 80px;
+      height: 60px;
+      width: 60px;
     }
   }
 </style>
