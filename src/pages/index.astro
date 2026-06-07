@@ -2,9 +2,51 @@
 import Header from "../components/Header.astro";
 import VideoHero from "../components/VideoHero.astro";
 import UpcomingEvents from "../components/UpcomingEvents.astro";
+import EventsSkeleton from "../components/EventsSkeleton.astro";
 import MarqueeBanner from "../components/MarqueeBanner.astro";
+import InfoSection from "../components/InfoSection.astro";
 import Newsletter from "../components/Newsletter.astro";
+import Faq from "../components/Faq.astro";
 import Footer from "../components/Footer.astro";
+
+const userAgent = Astro.request.headers.get("user-agent") ?? "";
+const isMobile = /Android|iPhone|iPod|Mobile/i.test(userAgent);
+const heroVideoSrc = isMobile ? "/hero_mobile.mp4" : "/hero_desktop.mp4";
+
+// --- SEO ---
+const siteName = "Sapphic Space UK";
+const pageTitle =
+  "Sapphic Space UK — Sober-Friendly Sapphic Events in Glasgow & Edinburgh";
+const pageDescription =
+  "The Sapphic Space — a Community Interest Company creating safe, joyful, sober-friendly events for sapphic people in Glasgow and Edinburgh. Browse upcoming events.";
+
+// Absolute URLs derived from the request so no domain needs hard-coding.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.url).href;
+const siteOrigin = new URL("/", Astro.url).href;
+const ogImage = new URL("/snapshot.jpg", Astro.url).href;
+const logoUrl = new URL("/thesapphicspace.png", Astro.url).href;
+
+const socialLinks = [
+  "https://www.instagram.com/thesapphicspaceuk",
+  "https://www.tiktok.com/@thesapphicspaceuk",
+  "https://www.facebook.com/people/The-Sapphic-Space/61570442771957/",
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "The Sapphic Space",
+  alternateName: siteName,
+  url: siteOrigin,
+  logo: logoUrl,
+  image: ogImage,
+  description: pageDescription,
+  areaServed: [
+    { "@type": "City", name: "Glasgow" },
+    { "@type": "City", name: "Edinburgh" },
+  ],
+  sameAs: socialLinks,
+};
 ---
 
 <html lang="en">
@@ -13,11 +55,27 @@ import Footer from "../components/Footer.astro";
     <link rel="icon" href="/icon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>Sapphic Space UK</title>
-    <meta
-      name="description"
-      content="The Sapphic Space — a Community Interest Company creating safe, joyful events for sapphic people across the UK. Browse upcoming events."
-    />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
     <style>
       *,
       *::before,
@@ -25,6 +83,13 @@ import Footer from "../components/Footer.astro";
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+      }
+
+      :root {
+        /* Standard vertical rhythm between page sections.
+           Each section applies this as padding-block, so every
+           inter-section gap is a consistent 2 × --section-space. */
+        --section-space: 3rem;
       }
 
       body {
@@ -36,64 +101,22 @@ import Footer from "../components/Footer.astro";
         color: #111;
       }
     </style>
-    <style>
-      .events-skeleton {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-        margin: 1rem;
-      }
-
-      @media (min-width: 768px) {
-        .events-skeleton {
-          margin: 1rem 2rem;
-        }
-      }
-
-      .skeleton-card {
-        height: 420px;
-        border-radius: 12px;
-        background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
-        );
-        background-size: 200% 100%;
-        animation: shimmer 1.4s infinite;
-      }
-
-      @keyframes shimmer {
-        0% {
-          background-position: 200% 0;
-        }
-        100% {
-          background-position: -200% 0;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .skeleton-card {
-          height: 50dvh;
-        }
-      }
-    </style>
   </head>
   <body>
-    <Header logoSrc="/TheSapphicSpaceUK.png" logoAlt="Sapphic Space UK" />
+    <Header logoSrc="/thesapphicspace.png" logoAlt="Sapphic Space UK" />
     <main>
       <VideoHero
-        videoSrc="/video.mp4"
+        videoSrc={heroVideoSrc}
         outsavvyUrl="https://www.outsavvy.com/organiser/the-sapphic-space-cic"
         posterSrc="/snapshot.jpg"
       />
+      <InfoSection />
       <MarqueeBanner text="Upcoming Events" />
       <UpcomingEvents server:defer>
-        <div slot="fallback" class="events-skeleton">
-          <div class="skeleton-card"></div>
-        </div>
+        <EventsSkeleton slot="fallback" />
       </UpcomingEvents>
-      <!-- <Newsletter /> -->
+      <Newsletter />
+      <Faq />
     </main>
     <Footer />
   </body>
