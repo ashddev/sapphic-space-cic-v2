@@ -1,3 +1,6 @@
+# large hero video — too big to push, restore later
+public/hero_desktop.mp4
+
 # build output
 dist/
 # generated types
